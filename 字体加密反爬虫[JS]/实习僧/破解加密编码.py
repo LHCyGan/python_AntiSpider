@@ -1,0 +1,8 @@
+# 转换成 bytes
+print("-".encode('utf-8'))
+# \xee\x86\xa7 -- 1
+# \xef\xa3\xad -- 0
+# \xef\x9f\xac -- 3
+# \xef\x81\x9b -- 5
+# \xe5\xa4\xa9 -- 天
+# \xef\x88\x9f -- 2

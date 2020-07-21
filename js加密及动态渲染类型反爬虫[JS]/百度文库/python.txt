@@ -1,0 +1,1661 @@
+
+Python2.x和3.x主要差异总结 
+开始使用Python之后就到处宣扬Python如何如何好，宣传工作的一大重要诀窍就是做对比，
+比如原先用Java的时候做个什么东西要写多少代码，怎么个别扭，现在用Python实现同样
+的功能怎么个简单等等。不过谈Python，不管怎么谈，老会谈到Python2.x和3.x的版本差
+异问题，这个差异真不是一般的大，从一个简单的print到核心库的改进都牵扯到了很多，现
+在总结了一些主要的差异点。  
+ 
+基本类型  
+ 
+(1) 整形  
+在python 2.x中，有两种整数类型，一般的32位整数和长整数，长整数都是以L或者l(不
+建议使用小写l, 容易跟1搞混)，超过32位长度之后会自动转换为长整形。  
+在python 3.x中，允许我们更随心所欲更自然的使用整数，只有一种类型，没有长度限制。  
+python 2.x  
+?
+ 
+1 
+>>> 1000000000000000000000000000000000
+ 
+2 
+1000000000000000000000000000000000L
+ 
+python 3.x  
+?
+ 
+1 
+>>> 1000000000000000000000000000000
+ 
+2 
+1000000000000000000000000000000
+ 
+(2) 八进制字面量表示  
+在Python 2.x中，表示八进制字面量有两种方式，一是同众多我们所熟悉的编程语言一样，
+直接在数字前加0,比如01000, 另外是加0o(0和小写字母o)0o1000  
+在Python 3.x中，表示八进制字面量的方式只有一种，就是0o1000  
+python 2.x  
+?
+ 
+1 
+>>> 0o1000
+ 
+2 
+512
+ 
+3 
+>>> 01000
+ 
+4 
+512
+ 
+python 3.x  
+?
+ 
+1 
+2 
+3 
+4 
+>>> 01000
+ 
+  File
+ 
+
+ 
+    01000
+ 
+        ^
+ 
+5 
+SyntaxError: invalid token
+ 
+6 
+7 
+>>> 0o1000
+ 
+512
+ 
+ 
+运算符  
+ 
+(1) 不等于测试  
+Python 2.x中不等于有两种写法 != 和 <>  
+Python 3.x中去掉了<>, 只有!=一种写法，还好，我从来没有使用<>的习惯  
+(2) 去掉了repr表达式``  
+Python 2.x 中反引号``相当于repr函数的作用  
+Python 3.x 中去掉了``这种写法，只允许使用repr函数，这样做的目的是为了使代码看上去
+更清晰么？不过我感觉用repr的机会很少，一般只在debug的时候才用，多数时候还是用
+str函数来用字符串描述对象。  
+(3) 除法运算  
+Python中的除法较其它语言显得非常高端，有套很复杂的规则。Python中的除法有两个运
+算符，\/和\/\/  
+首先来说\/除法:  
+在python 2.x中\/除法就跟我们熟悉的大多数语言，比如Java啊C啊差不多，整数相除的结
+果是一个整数，把小数部分完全忽略掉，浮点数除法会保留小数点的部分得到一个浮点数的
+结果。  
+在python 3.x中\/除法不再这么做了，对于整数之间的相除，结果也会是浮点数。  
+Python 2.x:  
+?
+ 
+1 
+2 
+>>> 1
+ 
+\/
+ 
+2
+ 
+0
+ 
+3 
+>>> 1.0
+ 
+\/
+ 
+2.0
+ 
+4 
+0.5
+ 
+Python 3.x:  
+?
+ 
+1 
+>>> 1\/2
+ 
+2 
+0.5
+ 
+而对于\/\/除法，这种除法叫做floor除法，会对除法的结果自动进行一个floor操作，在python 2.x
+和python 3.x中是一致的。  
+python 2.x:  
+?
+ 
+1 
+>>> -1
+ 
+\/\/
+ 
+2
+ 
+2 
+-1
+ 
+python 3.x:  
+?
+ 
+1 
+>>> -1
+ 
+\/\/
+ 
+2
+ 
+2 
+-1
+ 
+注意的是并不是舍弃小数部分，而是执行floor操作，如果要截取小数部分，那么需要使用math模
+块的trunc函数  
+python 3.x:  
+?
+ 
+1 
+>>> import
+ 
+math
+ 
+2 
+>>> math.trunc(1
+ 
+\/
+ 
+2)
+ 
+3 
+0
+ 
+4 
+>>> math.trunc(-1
+ 
+\/
+ 
+2)
+ 
+5 
+0
+ 
+(4) 比较运算符  
+Python 2.x中允许不同类型的对象进行比较，比如:  
+?
+ 
+1 
+>>> -1
+ 
+< ''
+ 
+2 
+True
+ 
+3 
+>>> 1
+ 
+> ''
+ 
+4 
+False
+ 
+Python 3.x中则不允许这类不同类型之间含糊不清的比较:  
+?
+ 
+1 
+2 
+3 
+>>> 1
+ 
+> ''
+ 
+Traceback (most recent call last):
+ 
+  File
+ 
+
+ 
+<module>
+ 
+4 
+TypeError: unorderable types: int() > str()
+ 
+我觉着即使在2.x中也不应该使用这种含糊不清的比较，1 > '' 返回了False, 这个是基于什
+么判断的？说不清楚。  
+ 
+语句  
+ 
+(1) print  
+这是应该算是最广为人知的一个差别了吧，Python 2.x和Python 3.x之间连Hello World
+都是不兼容的。  
+python 2.x中print是语句  
+?
+ 
+1 
+print
+ 
+>> file
+ 
+x, y
+ 
+向打开的输出流file中输出x, y变量的值  
+在python 3.x中这句要这么写  
+?
+ 
+1 
+print(x,y,file=file)
+ 
+file参数定义的默认值是sys.stdout 
+ 
+ 
+(2) 扩展序列解包  
+python中的序列赋值一直是这门语言宣传时候的一个亮点，能把一个序列解开进行赋值:  
+?
+ 
+1 
+>>> x, y =
+ 
+[1, 2]
+ 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+12 
+13 
+14 
+15 
+>>> x
+ 
+1
+ 
+>>> y
+ 
+2
+ 
+>>> x, y =
+ 
+1, 2
+ 
+>>> x
+ 
+1
+ 
+>>> y
+ 
+2
+ 
+>>> x, y =
+ 
+y, x
+ 
+>>> x
+ 
+2
+ 
+>>> y
+ 
+1
+ 
+python 3.x对这一功能更加进行了强化，支持扩展序列解包:  
+?
+ 
+1 
+>>> x, *y =
+ 
+1, 2, 3
+ 
+2 
+3 
+4 
+>>> x
+ 
+1
+ 
+>>> y
+ 
+5 
+[2, 3]
+ 
+ 
+内置集合类型  
+ 
+内置集合的差别主要体现在字典对象的几个视图方法上，keys\items和values，在2.x中这
+几个试图方法每次都是赤裸裸的返回一个新的列表，3.x对这种粗鲁的行为做了优化，返回的
+是迭代器对象。  
+另外原先字典对象有个has_key方法来判断key在字典中是否存在，这个方法实现的功能跟
+in运算符完全一样，因此在3.x就把这个方法给干掉了。  
+ 
+ 
+函数  
+ 
+(1) nonlocal作用域  
+在2.x的时代，Python只有两个作用域，模块里面的全局作用域和函数的局部作用域，但是
+随着在函数中定义函数的情况越来越多，比如装饰器、闭包等等，这里面就出现了内层函数
+引用外层函数变量的问题：  
+比如我要在内层函数修改外层函数的一个变量，在Python 2.x的时代就会出现错误:  
+?
+ 
+>>> def
+ 
+out_function():
+ 
+1 
+...   call_count =
+ 
+0
+ 
+2 
+...   def
+ 
+in_function():
+ 
+3 
+...     call_count +=
+ 
+1
+ 
+4 
+...   return
+ 
+in_function
+ 
+5 
+... 
+ 
+6 
+>>> out_function()()
+ 
+7 
+Traceback (most recent call last):
+ 
+8 
+  File
+ 
+
+ 
+<module>
+ 
+9 
+  File
+ 
+
+ 
+in_function
+ 
+10 
+UnboundLocalError: local variable 'call_count'
+ 
+referenced 
+11 
+before assignment
+ 
+但是在Python 3.x中只要使用nonlocal关键字对变量进行修饰，就会自动去外层函数寻找变量:  
+?
+ 
+1 
+2 
+3 
+>>> def
+ 
+out_function():
+ 
+...   call_count =
+ 
+0
+ 
+...   def
+ 
+in_function():
+ 
+4 
+...     nonlocal call_count
+ 
+5 
+6 
+7 
+...     call_count+=1
+ 
+...   return
+ 
+in_function
+ 
+... 
+ 
+8 
+>>> out_function()()
+ 
+(2) Key-word only 参数  
+前面我们说到print在Python 3.x中是作为函数提供的。print的参数设计是这样的:  
+?
+ 
+1 
+print(*value, sep=' ', end='\n', file=sys.stdout)
+ 
+如果了解Python参数的顺序规则，我们知道在Python 2.x中，参数的顺序必须遵循以下规则去定
+义:  
+def function(一般参数 or 带默认值参数,*sequence, **dict)  
+而这个地方却允许先定义*sequence再去定义一般参数，这就是Python 3.x所支持的
+key-word only的参数形式。在一个*之后允许去定义一些参数，这些参数在函数调用的时候
+必须指定参数名称。这样本质上其实就是在*sequence类型的参数之后固定写死了一个**dict, 
+当然也可以在后面继续定义一个**dict:  
+?
+ 
+1 
+def
+ 
+test(*value, name, **dict):
+ 
+但这样写就不对了def test(*value, **dict, name)  
+(3) map、filter和reduce  
+这三个函数号称是函数式编程的代表。在Python3.x和Python2.x中也有了很大的差异。  
+首先我们先简单的在Python2.x的交互下输入map和filter,看到它们两者的类型是built-in 
+function:  
+?
+ 
+1 
+2 
+3 
+>>> map
+ 
+<built-in
+ 
+function map>
+ 
+>>> filter
+ 
+4 
+<built-in
+ 
+function filter>
+ 
+它们输出的结果类型都是列表:  
+?
+ 
+1 
+2 
+>>> map(lambda
+ 
+x:x *
+ 
+2,[1,2,3]) 
+ 
+[2, 4, 6]
+ 
+3 
+>>> filter(lambda
+ 
+x:x %
+ 
+2
+ 
+==
+ 
+0, range(10))
+ 
+4 
+[0, 2, 4, 6, 8]
+ 
+但是在Python 3.x中它们却不是这个样子了：  
+?
+ 
+1 
+2 
+3 
+4 
+5 
+6 
+>>> map
+ 
+<class
+ 
+'map'>
+ 
+>>> map(print,[1,2,3])
+ 
+<map
+ 
+object
+ 
+at 0xa6fd70c>
+ 
+>>> filter
+ 
+<class
+ 
+'filter'>
+ 
+7 
+>>> filter(lambda
+ 
+x:x %
+ 
+2
+ 
+==
+ 
+0, range(10))
+ 
+8 
+<filter
+ 
+object
+ 
+at 0xa6eeeac>
+ 
+首先它们从函数变成了类，其次，它们的返回结果也从当初的列表成了一个可迭代的对象, 我们尝试
+用next函数来进行手工迭代:  
+?
+ 
+1 
+>>> f =
+ 
+filter(lambda
+ 
+x:x %
+ 
+2
+ 
+==
+ 
+0, range(10))
+ 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+>>> next(f)
+ 
+0
+ 
+>>> next(f)
+ 
+2
+ 
+>>> next(f)
+ 
+4
+ 
+>>> next(f)
+ 
+6
+ 
+对于比较高端的reduce函数，它在Python 3.x中已经不属于built-in了，被挪到functools
+模块当中。  
+ 
+模块  
+ 
+Python 2.x和3.x模块之间的差别主要体现在相对导入这部分的规则上。  
+在Python2.x和3.x当中都是使用点号来指定在当前包下进行相对导入，但是在没有点号的
+情况下，Python2.x会以先相对再绝对的模块搜索顺序，3.x的顺序跟这个相反，默认是绝对
+的，缺少点号的时候，导入忽略包含包自身并在sys.path搜索路径上进行查找。  
+ 
+面向对象  
+ 
+(1) 经典类和新式类  
+Python OO最神奇的地方就是有两种类，经典类和新式类。  
+新式类跟经典类的差别主要是以下几点:  
+1. 新式类对象可以直接通过__class__属性获取自身类型:type  
+2. 继承搜索的顺序发生了改变,经典类多继承属性搜索顺序: 先深入继承树左侧，再返回，开
+始找右侧;新式类多继承属性搜索顺序: 先水平搜索，然后再向上移动  
+3. 新式类增加了__slots__内置属性, 可以把实例属性的种类锁定到__slots__规定的范围之中。  
+4. 新式类增加了__getattribute__方法  
+Python 2.x中默认都是经典类，只有显式继承了object才是新式类  
+Python 3.x中默认都是新式类，不必显式的继承object  
+python 2.x:  
+?
+ 
+1 
+2 
+3 
+>>> ClassicClass.__class__
+ 
+Traceback (most recent call last):
+ 
+  File
+ 
+
+ 
+<module>
+ 
+4 
+AttributeError: class
+ 
+ClassicClass has no attribute '__class__'
+ 
+5 
+>>> class
+ 
+NewClass(object):
+ 
+6 
+7 
+8 
+9 
+python 3.x:  
+?
+ 
+...   pass
+ 
+... 
+ 
+>>> NewClass.__class__
+ 
+<type
+ 
+'type'>
+ 
+1 
+>>> class
+ 
+NewClass:pass
+ 
+2 
+... 
+ 
+3 
+>>> NewClass.__class__
+ 
+4 
+<class
+ 
+'type'>
+ 
+(2) 无绑定方法  
+在Python 2.x中除了类方法和静态方法，其余的方法都必须在第一个参数传递self跟实例绑
+定，但是在Python 3.x中废除了这条规定，允许方法不绑定实例，这样的方法跟普通的函数
+没有区别：  
+Python 2.x:  
+?
+ 
+1 
+2 
+3 
+4 
+5 
+>>> class
+ 
+MyClass:
+ 
+...   def
+ 
+function():
+ 
+...     print
+ 
+
+ 
+... 
+ 
+>>> MyClass.function()
+ 
+6 
+7 
+Traceback (most recent call last):
+ 
+  File
+ 
+
+ 
+<module>
+ 
+8 
+TypeError: unbound method function() must be called with MyClass 
+9 
+10 
+11 
+12 
+13 
+instance as first argument (got nothing instead)
+ 
+>>> m =
+ 
+MyClass()
+ 
+>>> m.function()
+ 
+Traceback (most recent call last):
+ 
+  File
+ 
+
+ 
+<module>
+ 
+TypeError: function() takes no arguments (1
+ 
+given)
+ 
+Python 3.x:  
+?
+ 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+>>> class
+ 
+MyClass:
+ 
+...   def
+ 
+function():
+ 
+...     print(
+ 
+... 
+ 
+>>> MyClass.function()
+ 
+function
+ 
+>>> m =
+ 
+MyClass()
+ 
+>>> m.function()
+ 
+Traceback (most recent call last):
+ 
+  File
+ 
+
+ 
+<module>
+ 
+11 
+TypeError: function() takes no arguments (1
+ 
+given)
+ 
+(3) 重要的重载  
+1. next()和__next__():这应该是继print之后第二大坑爹的不兼容吧，Python程序漫山遍野
+都是迭代器，但是2和3之间迭代器的实现接口方法名是不同的……嗯，啥都不说了。  
+2. 分片拦截:Python 3.x之前, 类可以定义__getslice__和__setslice__方法来专门拦截分片，
+并且这两个方法优先于__getitem__和__setitem__, 但是Python 3.x时代这俩方法再也不存
+在了，全部的工作都交给了__getitem__和__setitem__，因此在使用这两个方法之前要先判
+断传递进参数的类型是不是slice对象。  
+3. __bool__方法:我们知道Python中默认将所有的空对象定义为布尔意义上的False,在自己
+定义的类中我们也可以加入自定义的布尔判断标准，在2.x中这个方法名叫做__nonzero__, 
+这个名字显然非常不直观并且不科学！所有考试交白卷的孩子我们都要否定他们的才能么？
+显然不能！因此Python 3.x中这个方法被重名命为__bool__  
+4. 3.x 取消了用于大小比较的__cmp__方法，取而代之的是：__lt__、__gt__、__le__、__ge__、
+__eq__、__ne__，嗯，我感觉这个想法真是不能苟同……有谁能说服我给我洗脑让我爱上这一
+堆__lt__、__gt__、__le__、__ge__、__eq__、__ne__么。。。  
+(4) 类修饰器  
+在我的上一篇博客中秀了一把函数装饰器在表单验证中的使用，
+http:\/\/my.oschina.net\/chihz\/blog\/122897
+  
+在3.x的时代，类也有装饰器了，这个装饰器威力巨大，能把装饰的类搞的面目全非，总之
+想怎么搞就怎么搞，用法同函数装饰器基本一致，只不过传递的参数是类型:  
+?
+ 
+1 
+2 
+3 
+>>> def
+ 
+shutdown(cls):
+ 
+...   def
+ 
+shutdown_func(self):
+ 
+...     print(
+ 
+4 
+...   cls.shutdown =
+ 
+shutdown_func
+ 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+12 
+...   return
+ 
+cls
+ 
+... 
+ 
+>>> @shutdown
+ 
+... class
+ 
+Test:pass
+ 
+... 
+ 
+>>> t =
+ 
+Test()
+ 
+>>> t.shutdown()
+ 
+do something...
+ 
+ 
+异常  
+ 
+先来看一段代码  
+python 2.x:  
+?
+ 
+1 
+>>> class
+ 
+Person:
+ 
+2 
+...   def
+ 
+__init__(self, msg):
+ 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+...     self.msg =
+ 
+msg
+ 
+... 
+ 
+>>> try:
+ 
+...   raise
+ 
+Person, 
+ 
+... except
+ 
+Person as p:
+ 
+...   print
+ 
+p.msg
+ 
+... 
+ 
+woca
+ 
+python 3.x:  
+?
+ 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+12 
+>>> class
+ 
+Person:
+ 
+...   def
+ 
+__init__(self, msg):
+ 
+...     self.msg =
+ 
+msg
+ 
+... 
+ 
+>>> try:
+ 
+...   raise
+ 
+Person(
+ 
+... except
+ 
+Person as p:
+ 
+...   print(p.msg)
+ 
+Traceback (most recent call last):
+ 
+  File
+ 
+
+ 
+<module>
+ 
+TypeError: exceptions must derive from
+ 
+BaseException
+ 
+  
+13 
+14 
+15 
+16 
+17 
+18 
+During handling of the above exception, another exception 
+occurred:
+ 
+  
+Traceback (most recent call last):
+ 
+  File
+ 
+
+ 
+<module>
+ 
+TypeError: catching classes that do not
+ 
+inherit from
+ 
+BaseException is
+ 
+not
+ 
+allowed
+ 
+>>>
+ 
+接下来说不同:  
+1. 在2.x时代，所有类型的对象都是可以被直接抛出的，在3.x时代，只有继承自
+BaseException的对象才可以被抛出。  
+2. 2.x raise语句使用逗号将抛出对象类型和参数分开，3.x取消了这种奇葩的写法，直接调
+用构造函数抛出对象即可。  
+在2.x时代，异常在代码中除了表示程序错误，还经常做一些普通控制结构应该做的事情，
+在3.x中可以看出，设计者让异常变的更加专一，只有在错误发生的情况才能去用异常捕获
+语句来处理。  
+ 
+其它  
+ 
+(1) 编码 
+Py3.X源码文件默认使用utf-8编码, 不需要再在文件头上声明 # -*- coding: utf-8 -*-   
+(2) input函数  
+取消了蛋疼的raw_input,input函数的功能跟原先的raw_input一样  
+python 2.x  
+?
+ 
+1 
+>>> x =
+ 
+input(
+ 
+2 
+3 
+4 
+python 3.x  
+please input
+ 
+x:1
+ 
+>>> x
+ 
+1
+ 
+1 
+>>> x =
+ 
+input(
+ 
+2 
+3 
+4 
+please input
+ 
+x1
+ 
+>>> x
+ 
+'1'
+ 
+(2) 返回结果 列表->迭代器 
+取消了原先的xrange,现在range函数的返回结果同之前的xrange的返回结果一样，不是列
+表，而是一个可迭代的对象。其它常用的内置函数，如zip也是如此。  
+(3) Unicode字符串 
+能很好的支持Unicode  
+python 2.x  
+ 
+1 
+>>> str
+ 
+=
+ 
+我爱北京天安门
+ 
+>>> str
+ 
+2 
+'\xe6\x88\x91\xe7\x88\xb1\xe5\x8c\x97\xe4\xba\xac\xe5\xa4\xa9
+3 
+\xe5\xae\x89\xe9\x97\xa8'
+ 
+4 
+>>> str
+ 
+=
+ 
+u我爱北京天安门
+ 
+5 
+>>> str
+ 
+6 
+u'\u6211\u7231\u5317\u4eac\u5929\u5b89\u95e8'
+ 
+?
+ 
+python 3.x  
+?
+ 
+1 
+>>> str
+ 
+=
+ 
+我爱北京天安门
+ 
+2 
+3 
+>>> str
+ 
+'我爱北京天安门'
+ 
+没有去考究核心库的差别，常用语法上的差别就总结了这些，感觉……还好吧，很多常用的框
+架现在都开始支持Python 3.x, 虽然现在自己主要是在用2.7进行开发，但多了解一下最新
+的动态总是好的，Python 最初版本设计的年代距离现在已经很长时间了，貌似跟自己同岁，
+可能那时的一些概念尚不清晰，但Python出现的比Java早多了，能设计到这种先进地步，
+已经相当厉害，Python 3.x虽然跟Python 2.x不兼容，但是修改之处都是让Python看起来
+更合理，所有的风格更一致，更Pythonic，总之是个好方向。  
+ 
+Python2.x和3.x主要差异总结 
+开始使用Python之后就到处宣扬Python如何如何好，宣传工作的一大重要诀窍就是做对比，
+比如原先用Java的时候做个什么东西要写多少代码，怎么个别扭，现在用Python实现同样
+的功能怎么个简单等等。不过谈Python，不管怎么谈，老会谈到Python2.x和3.x的版本差
+异问题，这个差异真不是一般的大，从一个简单的print到核心库的改进都牵扯到了很多，现
+在总结了一些主要的差异点。  
+ 
+基本类型  
+ 
+(1) 整形  
+在python 2.x中，有两种整数类型，一般的32位整数和长整数，长整数都是以L或者l(不
+建议使用小写l, 容易跟1搞混)，超过32位长度之后会自动转换为长整形。  
+在python 3.x中，允许我们更随心所欲更自然的使用整数，只有一种类型，没有长度限制。  
+python 2.x  
+?
+ 
+1 
+>>> 1000000000000000000000000000000000
+ 
+2 
+1000000000000000000000000000000000L
+ 
+python 3.x  
+?
+ 
+1 
+>>> 1000000000000000000000000000000
+ 
+2 
+1000000000000000000000000000000
+ 
+(2) 八进制字面量表示  
+在Python 2.x中，表示八进制字面量有两种方式，一是同众多我们所熟悉的编程语言一样，
+直接在数字前加0,比如01000, 另外是加0o(0和小写字母o)0o1000  
+在Python 3.x中，表示八进制字面量的方式只有一种，就是0o1000  
+python 2.x  
+?
+ 
+1 
+>>> 0o1000
+ 
+2 
+512
+ 
+3 
+>>> 01000
+ 
+4 
+512
+ 
+python 3.x  
+?
+ 
+1 
+2 
+3 
+4 
+>>> 01000
+ 
+  File
+ 
+
+ 
+    01000
+ 
+        ^
+ 
+5 
+SyntaxError: invalid token
+ 
+6 
+7 
+>>> 0o1000
+ 
+512
+ 
+ 
+运算符  
+ 
+(1) 不等于测试  
+Python 2.x中不等于有两种写法 != 和 <>  
+Python 3.x中去掉了<>, 只有!=一种写法，还好，我从来没有使用<>的习惯  
+(2) 去掉了repr表达式``  
+Python 2.x 中反引号``相当于repr函数的作用  
+Python 3.x 中去掉了``这种写法，只允许使用repr函数，这样做的目的是为了使代码看上去
+更清晰么？不过我感觉用repr的机会很少，一般只在debug的时候才用，多数时候还是用
+str函数来用字符串描述对象。  
+(3) 除法运算  
+Python中的除法较其它语言显得非常高端，有套很复杂的规则。Python中的除法有两个运
+算符，\/和\/\/  
+首先来说\/除法:  
+在python 2.x中\/除法就跟我们熟悉的大多数语言，比如Java啊C啊差不多，整数相除的结
+果是一个整数，把小数部分完全忽略掉，浮点数除法会保留小数点的部分得到一个浮点数的
+结果。  
+在python 3.x中\/除法不再这么做了，对于整数之间的相除，结果也会是浮点数。  
+Python 2.x:  
+?
+ 
+1 
+2 
+>>> 1
+ 
+\/
+ 
+2
+ 
+0
+ 
+3 
+>>> 1.0
+ 
+\/
+ 
+2.0
+ 
+4 
+0.5
+ 
+Python 3.x:  
+?
+ 
+1 
+>>> 1\/2
+ 
+2 
+0.5
+ 
+而对于\/\/除法，这种除法叫做floor除法，会对除法的结果自动进行一个floor操作，在python 2.x
+和python 3.x中是一致的。  
+python 2.x:  
+?
+ 
+1 
+>>> -1
+ 
+\/\/
+ 
+2
+ 
+2 
+-1
+ 
+python 3.x:  
+?
+ 
+1 
+>>> -1
+ 
+\/\/
+ 
+2
+ 
+2 
+-1
+ 
+注意的是并不是舍弃小数部分，而是执行floor操作，如果要截取小数部分，那么需要使用math模
+块的trunc函数  
+python 3.x:  
+?
+ 
+1 
+>>> import
+ 
+math
+ 
+2 
+>>> math.trunc(1
+ 
+\/
+ 
+2)
+ 
+3 
+0
+ 
+4 
+>>> math.trunc(-1
+ 
+\/
+ 
+2)
+ 
+5 
+0
+ 
+(4) 比较运算符  
+Python 2.x中允许不同类型的对象进行比较，比如:  
+?
+ 
+1 
+>>> -1
+ 
+< ''
+ 
+2 
+True
+ 
+3 
+>>> 1
+ 
+> ''
+ 
+4 
+False
+ 
+Python 3.x中则不允许这类不同类型之间含糊不清的比较:  
+?
+ 
+1 
+2 
+3 
+>>> 1
+ 
+> ''
+ 
+Traceback (most recent call last):
+ 
+  File
+ 
+
+ 
+<module>
+ 
+4 
+TypeError: unorderable types: int() > str()
+ 
+我觉着即使在2.x中也不应该使用这种含糊不清的比较，1 > '' 返回了False, 这个是基于什
+么判断的？说不清楚。  
+ 
+语句  
+ 
+(1) print  
+这是应该算是最广为人知的一个差别了吧，Python 2.x和Python 3.x之间连Hello World
+都是不兼容的。  
+python 2.x中print是语句  
+?
+ 
+1 
+print
+ 
+>> file
+ 
+x, y
+ 
+向打开的输出流file中输出x, y变量的值  
+在python 3.x中这句要这么写  
+?
+ 
+1 
+print(x,y,file=file)
+ 
+file参数定义的默认值是sys.stdout 
+ 
+ 
+(2) 扩展序列解包  
+python中的序列赋值一直是这门语言宣传时候的一个亮点，能把一个序列解开进行赋值:  
+?
+ 
+1 
+>>> x, y =
+ 
+[1, 2]
+ 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+12 
+13 
+14 
+15 
+>>> x
+ 
+1
+ 
+>>> y
+ 
+2
+ 
+>>> x, y =
+ 
+1, 2
+ 
+>>> x
+ 
+1
+ 
+>>> y
+ 
+2
+ 
+>>> x, y =
+ 
+y, x
+ 
+>>> x
+ 
+2
+ 
+>>> y
+ 
+1
+ 
+python 3.x对这一功能更加进行了强化，支持扩展序列解包:  
+?
+ 
+1 
+>>> x, *y =
+ 
+1, 2, 3
+ 
+2 
+3 
+4 
+>>> x
+ 
+1
+ 
+>>> y
+ 
+5 
+[2, 3]
+ 
+ 
+内置集合类型  
+ 
+内置集合的差别主要体现在字典对象的几个视图方法上，keys\items和values，在2.x中这
+几个试图方法每次都是赤裸裸的返回一个新的列表，3.x对这种粗鲁的行为做了优化，返回的
+是迭代器对象。  
+另外原先字典对象有个has_key方法来判断key在字典中是否存在，这个方法实现的功能跟
+in运算符完全一样，因此在3.x就把这个方法给干掉了。  
+ 
+ 
+函数  
+ 
+(1) nonlocal作用域  
+在2.x的时代，Python只有两个作用域，模块里面的全局作用域和函数的局部作用域，但是
+随着在函数中定义函数的情况越来越多，比如装饰器、闭包等等，这里面就出现了内层函数
+引用外层函数变量的问题：  
+比如我要在内层函数修改外层函数的一个变量，在Python 2.x的时代就会出现错误:  
+?
+ 
+>>> def
+ 
+out_function():
+ 
+1 
+...   call_count =
+ 
+0
+ 
+2 
+...   def
+ 
+in_function():
+ 
+3 
+...     call_count +=
+ 
+1
+ 
+4 
+...   return
+ 
+in_function
+ 
+5 
+... 
+ 
+6 
+>>> out_function()()
+ 
+7 
+Traceback (most recent call last):
+ 
+8 
+  File
+ 
+
+ 
+<module>
+ 
+9 
+  File
+ 
+
+ 
+in_function
+ 
+10 
+UnboundLocalError: local variable 'call_count'
+ 
+referenced 
+11 
+before assignment
+ 
+但是在Python 3.x中只要使用nonlocal关键字对变量进行修饰，就会自动去外层函数寻找变量:  
+?
+ 
+1 
+2 
+3 
+>>> def
+ 
+out_function():
+ 
+...   call_count =
+ 
+0
+ 
+...   def
+ 
+in_function():
+ 
+4 
+...     nonlocal call_count
+ 
+5 
+6 
+7 
+...     call_count+=1
+ 
+...   return
+ 
+in_function
+ 
+... 
+ 
+8 
+>>> out_function()()
+ 
+(2) Key-word only 参数  
+前面我们说到print在Python 3.x中是作为函数提供的。print的参数设计是这样的:  
+?
+ 
+1 
+print(*value, sep=' ', end='\n', file=sys.stdout)
+ 
+如果了解Python参数的顺序规则，我们知道在Python 2.x中，参数的顺序必须遵循以下规则去定
+义:  
+def function(一般参数 or 带默认值参数,*sequence, **dict)  
+而这个地方却允许先定义*sequence再去定义一般参数，这就是Python 3.x所支持的
+key-word only的参数形式。在一个*之后允许去定义一些参数，这些参数在函数调用的时候
+必须指定参数名称。这样本质上其实就是在*sequence类型的参数之后固定写死了一个**dict, 
+当然也可以在后面继续定义一个**dict:  
+?
+ 
+1 
+def
+ 
+test(*value, name, **dict):
+ 
+但这样写就不对了def test(*value, **dict, name)  
+(3) map、filter和reduce  
+这三个函数号称是函数式编程的代表。在Python3.x和Python2.x中也有了很大的差异。  
+首先我们先简单的在Python2.x的交互下输入map和filter,看到它们两者的类型是built-in 
+function:  
+?
+ 
+1 
+2 
+3 
+>>> map
+ 
+<built-in
+ 
+function map>
+ 
+>>> filter
+ 
+4 
+<built-in
+ 
+function filter>
+ 
+它们输出的结果类型都是列表:  
+?
+ 
+1 
+2 
+>>> map(lambda
+ 
+x:x *
+ 
+2,[1,2,3]) 
+ 
+[2, 4, 6]
+ 
+3 
+>>> filter(lambda
+ 
+x:x %
+ 
+2
+ 
+==
+ 
+0, range(10))
+ 
+4 
+[0, 2, 4, 6, 8]
+ 
+但是在Python 3.x中它们却不是这个样子了：  
+?
+ 
+1 
+2 
+3 
+4 
+5 
+6 
+>>> map
+ 
+<class
+ 
+'map'>
+ 
+>>> map(print,[1,2,3])
+ 
+<map
+ 
+object
+ 
+at 0xa6fd70c>
+ 
+>>> filter
+ 
+<class
+ 
+'filter'>
+ 
+7 
+>>> filter(lambda
+ 
+x:x %
+ 
+2
+ 
+==
+ 
+0, range(10))
+ 
+8 
+<filter
+ 
+object
+ 
+at 0xa6eeeac>
+ 
+首先它们从函数变成了类，其次，它们的返回结果也从当初的列表成了一个可迭代的对象, 我们尝试
+用next函数来进行手工迭代:  
